@@ -1,0 +1,63 @@
+resources:
+  - name: go_gitRepo_demo
+    type: GitRepo
+    configuration:
+      path: ranjithrs/swampup-go-service
+      gitProvider: ranjithr_github
+
+  - name: svc_build_info_demo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: jfrogtraining
+      buildName: svc_build
+      buildNumber: 1
+
+  - name: svc_promoted_build_info_demo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: jfrogtraining
+      buildName: svc_build
+      buildNumber: 1
+
+pipelines:
+  - name: demo_service_demo
+    steps:
+      - name: bld_svc_demo
+        type: DockerBuild
+        configuration:
+          dockerFileLocation: .
+          dockerFileName: Dockerfile
+          dockerImageName: jfrogtraining-docker-local.jfrog.io/gosvc
+          dockerImageTag: $run_number
+          inputResources:
+            - name: go_gitRepo_demo
+          integrations:
+            - name: jfrogtraining
+
+      - name: push_svc_demo
+        type: DockerPush
+        configuration:
+          targetRepository: docker-local
+          integrations:
+            - name: jfrogtraining
+          inputSteps:
+            - name: bld_svc_demo
+
+      - name: publish_svc_build_demo
+        type: PublishBuildInfo
+        configuration:
+          inputSteps:
+            - name: push_svc_demo
+          outputResources:
+            - name: svc_build_info_demo
+
+      - name: promote_svc_build_demo
+        type: PromoteBuild
+        configuration:
+          targetRepository: pipelines-demo
+          integrations:
+            - name: jfrogtraining
+          inputResources:
+            - name: svc_build_info_demo
+          outputResources:
+            - name: svc_promoted_build_info_demo
