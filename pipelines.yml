@@ -28,7 +28,7 @@ pipelines:
           dockerFileLocation: .
           dockerFileName: Dockerfile
           dockerImageName: jfrogtraining-docker-local.jfrog.io/gosvc
-          dockerImageTag: $run_number
+          dockerImageTag: ${run_number}
           inputResources:
             - name: go_gitRepo_sample
           integrations:
