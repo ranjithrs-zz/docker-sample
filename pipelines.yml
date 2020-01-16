@@ -21,17 +21,13 @@ resources:
 
 pipelines:
   - name: go_service_sample
-    configuration:
-      environmentVariables:
-        readOnly:
-          dockerRepo: jfrogtraining-docker-local.jfrog.io  
     steps:
       - name: bld_svc_sample
         type: DockerBuild
         configuration:
           dockerFileLocation: .
           dockerFileName: Dockerfile
-          dockerImageName: "{$dockerRepo}/go-svc-sample"
+          dockerImageName: jfrogtraining-docker-local.jfrog.io/gosvc
           dockerImageTag: $run_number
           inputResources:
             - name: go_gitRepo_sample
