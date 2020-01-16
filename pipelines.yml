@@ -25,6 +25,7 @@ pipelines:
       - name: bld_svc_sample
         type: DockerBuild
         configuration:
+          affinityGroup: docker_build_group  
           dockerFileLocation: .
           dockerFileName: Dockerfile
           dockerImageName: jfrogtraining-docker-local.jfrog.io/gosvc
@@ -37,6 +38,7 @@ pipelines:
       - name: push_svc_sample
         type: DockerPush
         configuration:
+          affinityGroup: docker_build_group        
           targetRepository: docker-local
           integrations:
             - name: jfrogtraining
